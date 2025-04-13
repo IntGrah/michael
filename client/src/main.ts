@@ -17,7 +17,7 @@ const socket = new WebSocket(`${import.meta.env.VITE_WS_SERVER}/ws`);
 
 app.ports.internalSend.subscribe((message) => {
     if (socket.readyState === WebSocket.OPEN) {
-        console.log(JSON.stringify(message));
+        console.debug(JSON.stringify(message));
         socket.send(JSON.stringify(message));
     } else {
         console.error('Tried to send to a closed socket');
@@ -25,8 +25,12 @@ app.ports.internalSend.subscribe((message) => {
 });
 
 socket.onmessage = (event) => {
-    console.log(event.data);
+    console.debug(event.data);
     const data = JSON.parse(event.data);
+    if (data[0] === 'Error') {
+        alert(data[1] + '!');
+        console.error(data[1]);
+    }
     app.ports.internalReceive.send(data);
 };
 

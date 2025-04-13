@@ -1,10 +1,11 @@
 module Performance exposing (Choice(..), Model, Msg(..), init, subscriptions, update, view)
 
 import Browser.Events
-import Element exposing (Color, Element, alpha, centerX, centerY, column, el, height, image, inFront, moveDown, moveLeft, moveRight, moveUp, onRight, padding, px, rotate, row, spacing, text, width)
+import Element exposing (Color, Element, alpha, centerX, centerY, column, el, height, image, inFront, moveDown, moveLeft, moveRight, moveUp, onRight, padding, paragraph, px, rotate, row, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events as Events
+import Element.Font as Font
 import Element.Input as Input
 import Fragment exposing (Fragment)
 import Html.Attributes as HtmlA
@@ -350,10 +351,19 @@ keyDecoder =
                         JsonD.succeed (ChoiceChanged Right)
 
                     "ArrowUp" ->
-                        JsonD.succeed (ChoiceChanged NoOp)
+                        JsonD.succeed (ChoiceChanged Left)
 
                     "ArrowDown" ->
+                        JsonD.succeed (ChoiceChanged Right)
+
+                    " " ->
                         JsonD.succeed (ChoiceChanged NoOp)
+
+                    "r" ->
+                        JsonD.succeed RandomChoiceEnabledToggled
+
+                    "e" ->
+                        JsonD.succeed (ChoiceChanged Extinction)
 
                     _ ->
                         JsonD.fail "Not an arrow"
@@ -385,96 +395,12 @@ view model =
                 row [ centerY, padding 32, spacing 16 ]
                     [ viewMetronome model.monotonicBeat
                     , viewBarCounter model.monotonicBeat
-                    , Input.button
-                        (btn
-                            (if model.soundEnabled then
-                                Theme.green
-
-                             else
-                                Theme.grey9
-                            )
-                        )
-                        { onPress = Just SoundEnabledToggled
-                        , label =
-                            image []
-                                { src =
-                                    if model.soundEnabled then
-                                        "/volume_on.svg"
-
-                                    else
-                                        "/volume_off.svg"
-                                , description = "Toggle sound"
-                                }
-                        }
-                    , Input.button
-                        (btn
-                            (if model.randomChoiceEnabled then
-                                Theme.green
-
-                             else
-                                Theme.grey9
-                            )
-                        )
-                        { onPress = Just RandomChoiceEnabledToggled
-                        , label =
-                            image []
-                                { src = "/dice.svg"
-                                , description = "Toggle random choice"
-                                }
-                        }
-                    , Input.button
-                        (btn
-                            (if programmedExtinction model /= Nothing then
-                                Theme.red
-
-                             else if model.choice == Extinction then
-                                Theme.green
-
-                             else
-                                Theme.grey9
-                            )
-                        )
-                        { onPress = Just (ChoiceChanged Extinction)
-                        , label =
-                            image []
-                                { src = "/skull.svg"
-                                , description = "Extinction"
-                                }
-                        }
+                    , viewSoundToggle model.soundEnabled
+                    , viewRandomChoiceToggle model.randomChoiceEnabled
+                    , viewSelfExtinctionButton model
+                    , viewPin model.pin
                     ]
-            , if model.window == ( 0, 0 ) then
-                Element.none
-
-              else if Tuple.first model.window < 900 then
-                el
-                    [ width (px 640)
-                    , Element.scale (4 / 9)
-                    , inFront <| el [ moveLeft 400 ] (viewFragments model)
-                    ]
-                    Element.none
-
-              else if Tuple.first model.window < 1200 then
-                el
-                    [ width (px 800)
-                    , Element.scale (5 / 9)
-                    , inFront <| el [ moveLeft 320 ] (viewFragments model)
-                    ]
-                    Element.none
-
-              else if Tuple.first model.window < 1500 then
-                el
-                    [ width (px 1120)
-                    , Element.scale (7 / 9)
-                    , inFront <| el [ moveLeft 160 ] (viewFragments model)
-                    ]
-                    Element.none
-
-              else
-                el
-                    [ width (px 1440)
-                    , inFront (viewFragments model)
-                    ]
-                    Element.none
+            , viewFragmentsWithDynamicSize model
             ]
 
 
@@ -527,6 +453,128 @@ viewBarCounter beat =
                     ++ (String.fromInt <| modBy 5 beat + 1)
                 )
         )
+
+
+viewSoundToggle : Bool -> Element Msg
+viewSoundToggle enabled =
+    Input.button
+        (btn
+            (if enabled then
+                Theme.green
+
+             else
+                Theme.grey9
+            )
+        )
+        { onPress = Just SoundEnabledToggled
+        , label =
+            image []
+                { src =
+                    if enabled then
+                        "/volume_on.svg"
+
+                    else
+                        "/volume_off.svg"
+                , description = "Toggle sound"
+                }
+        }
+
+
+viewRandomChoiceToggle : Bool -> Element Msg
+viewRandomChoiceToggle enabled =
+    Input.button
+        (btn
+            (if enabled then
+                Theme.green
+
+             else
+                Theme.grey9
+            )
+        )
+        { onPress = Just RandomChoiceEnabledToggled
+        , label =
+            image []
+                { src = "/dice.svg"
+                , description = "Toggle random choice"
+                }
+        }
+
+
+viewSelfExtinctionButton : Model -> Element Msg
+viewSelfExtinctionButton model =
+    Input.button
+        (btn
+            (if programmedExtinction model /= Nothing then
+                Theme.red
+
+             else if model.choice == Extinction then
+                Theme.green
+
+             else
+                Theme.grey9
+            )
+        )
+        { onPress = Just (ChoiceChanged Extinction)
+        , label =
+            image []
+                { src = "/skull.svg"
+                , description = "Extinction"
+                }
+        }
+
+
+viewPin pin =
+    el
+        [ width (px 80)
+        , padding 8
+        , Border.width 2
+        , Border.color Theme.grey9
+        , Border.rounded 8
+        , Font.center
+        , Font.color grey5
+        , Font.size 16
+        ]
+    <|
+        text (String.fromInt pin)
+
+
+{-| Dynamically size the view box based on window size
+-}
+viewFragmentsWithDynamicSize : Model -> Element Msg
+viewFragmentsWithDynamicSize model =
+    if model.window == ( 0, 0 ) then
+        Element.none
+
+    else if Tuple.first model.window < 900 then
+        el
+            [ width (px 640)
+            , Element.scale (4 / 9)
+            , inFront <| el [ moveLeft 400 ] (viewFragments model)
+            ]
+            Element.none
+
+    else if Tuple.first model.window < 1200 then
+        el
+            [ width (px 800)
+            , Element.scale (5 / 9)
+            , inFront <| el [ moveLeft 320 ] (viewFragments model)
+            ]
+            Element.none
+
+    else if Tuple.first model.window < 1500 then
+        el
+            [ width (px 1120)
+            , Element.scale (7 / 9)
+            , inFront <| el [ moveLeft 160 ] (viewFragments model)
+            ]
+            Element.none
+
+    else
+        el
+            [ width (px 1440)
+            , inFront (viewFragments model)
+            ]
+            Element.none
 
 
 viewFragments : Model -> Element Msg

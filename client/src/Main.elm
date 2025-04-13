@@ -423,9 +423,23 @@ viewTutorial =
         column [ width (fill |> maximum 640), spacing 32 ]
             [ el [ Region.heading 1, Font.size 32, Font.bold ] (text "How to use")
             , column [ spacing 16 ]
-                [ el [] (text "Use the lag-o-meter ... (probably not needed)")
-                , el [] (text "Choose a tempo")
-                , el [] (text "Etc.")
+                [ paragraph [] [ text "Join or create a room by entering a pin." ]
+                , paragraph [] [ text "If creating a room, select a tempo, and configure extinction events (technical)." ]
+                , paragraph []
+                    [ text
+                        """
+                        By either clicking, pressing the arrow keys, or using foot pedals, you can
+                        choose one of two options to evolve your current piece of music.
+                        """
+                    ]
+                , paragraph []
+                    [ text
+                        """
+                        Use the randomiser by toggling the dice icon, which automatically chooses
+                        for you if you have not selected. Press the skull icon to schedule the
+                        voluntary extinction of your species of music.
+                        """
+                    ]
                 ]
             , Input.button (btn { bg = grey2, bgHover = grey3 })
                 { onPress = Just (Navigate init), label = text "Back" }
