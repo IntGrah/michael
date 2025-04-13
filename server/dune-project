@@ -9,14 +9,12 @@
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
+(documentation https://github.com/IntGrah/michael)
 
 (package
  (name server)
  (synopsis "Rhythm of Life")
- (description "Rhythm of Life")
+ (description "Evolving musical composition")
  (depends ocaml)
  (tags
   ("music" "rhythm")))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
