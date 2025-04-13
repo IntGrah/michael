@@ -120,8 +120,8 @@ init instruments data =
     , incoming =
         -- Dummy initial value
         { current = Fragment.init
-        , left = Fragment.init
-        , right = Fragment.init
+        , left = left
+        , right = right
         }
     , choice = NoOp
     }
