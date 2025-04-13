@@ -255,7 +255,7 @@ mutateBeatIndex instruments heartbeats index fragment =
             List.map canonicalise >> List.unique >> List.remove beat
 
         feature =
-            Random.weighted ( 3, Pitch ) [ ( 2, Accent ), ( 3, Rhythm ) ]
+            Random.weighted ( 2, Pitch ) [ ( 1, Accent ), ( 3, Rhythm ) ]
 
         choices =
             feature
