@@ -289,7 +289,7 @@ handleLockIn model =
         ( ( incomingLeft, incomingRight ), seed3 ) =
             Random.step
                 (Random.pair
-                    (Fragment.mutate model.instruments 10 model.heartbeatsReceived incomingCurrent)
+                    (Fragment.mutate model.instruments model.mutationRate model.heartbeatsReceived incomingCurrent)
                     (Fragment.mutate model.instruments model.mutationRate model.heartbeatsReceived incomingCurrent)
                 )
                 seed2
@@ -332,7 +332,7 @@ subscriptions _ =
         [ Time.every 10 Tick
         , Browser.Events.onAnimationFrame AnimationFrame
         , Browser.Events.onKeyDown keyDecoder
-        , Time.every 5000 (\_ -> SendHeartbeat)
+        , Time.every 20000 (\_ -> SendHeartbeat)
         , Browser.Events.onResize Resize
         ]
 

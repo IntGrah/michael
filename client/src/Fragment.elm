@@ -157,18 +157,66 @@ mutateRhythmAddition instruments beat =
 mutateRhythmMove : Mutation Beat
 mutateRhythmMove beat =
     case beat of
+        -- Crotchets
         Crotchet Rest ->
             []
 
         Crotchet (Note n) ->
             [ Semiquavers Rest Rest (Note n) Rest ]
 
-        Triplets _ _ _ ->
-            -- TODO
+        -- Triplets
+        Triplets Rest Rest Rest ->
             []
 
-        Semiquavers _ _ _ _ ->
-            -- TODO
+        Triplets (Note n1) Rest Rest ->
+            [ Triplets Rest (Note n1) Rest ]
+
+        Triplets Rest (Note n1) Rest ->
+            [ Triplets (Note n1) Rest Rest
+            , Triplets Rest Rest (Note n1)
+            ]
+
+        Triplets Rest Rest (Note n1) ->
+            [ Triplets Rest (Note n1) Rest ]
+
+        Triplets Rest (Note n2) (Note n3) ->
+            [ Triplets (Note n2) Rest (Note n3) ]
+
+        Triplets (Note n1) Rest (Note n3) ->
+            [ Triplets Rest (Note n1) (Note n3)
+            , Triplets (Note n1) (Note n3) Rest
+            ]
+
+        Triplets (Note n1) (Note n2) Rest ->
+            [ Triplets (Note n1) Rest (Note n2) ]
+
+        Triplets (Note _) (Note _) (Note _) ->
+            []
+
+        -- Semiquavers
+        Semiquavers Rest Rest Rest Rest ->
+            []
+
+        Semiquavers (Note n1) Rest Rest Rest ->
+            [ Semiquavers Rest (Note n1) Rest Rest ]
+
+        Semiquavers Rest (Note n1) Rest Rest ->
+            [ Semiquavers (Note n1) Rest Rest Rest
+            , Semiquavers Rest Rest (Note n1) Rest
+            ]
+
+        Semiquavers Rest Rest (Note n1) Rest ->
+            [ Semiquavers Rest (Note n1) Rest Rest
+            , Semiquavers Rest Rest Rest (Note n1)
+            ]
+
+        Semiquavers Rest Rest Rest (Note n1) ->
+            [ Semiquavers Rest Rest (Note n1) Rest ]
+
+        Semiquavers (Note _) (Note _) (Note _) (Note _) ->
+            []
+
+        _ ->
             []
 
 
@@ -311,8 +359,8 @@ mutateBeatIndex instruments heartbeats index fragment =
                                     |> List.sortBy Tuple.first
                                     -- Remove the annotation.
                                     |> List.map Tuple.second
-                                    -- Take the first 4 that are least similar.
-                                    |> List.take 4
+                                    -- Take the first 8 that are least similar.
+                                    |> List.take 8
                         in
                         case prunedChoices of
                             [] ->
