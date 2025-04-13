@@ -1,7 +1,7 @@
 module Performance exposing (Choice(..), Model, Msg(..), init, subscriptions, update, view)
 
 import Browser.Events
-import Element exposing (Color, Element, alpha, centerX, centerY, column, el, height, image, inFront, moveDown, moveLeft, moveRight, moveUp, onRight, padding, paragraph, px, rotate, row, spacing, text, width)
+import Element exposing (Color, Element, alpha, centerX, centerY, column, el, height, image, inFront, moveDown, moveLeft, moveRight, moveUp, onRight, padding, px, rotate, row, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events as Events
@@ -523,6 +523,7 @@ viewSelfExtinctionButton model =
         }
 
 
+viewPin : Int -> Element msg
 viewPin pin =
     el
         [ width (px 80)
