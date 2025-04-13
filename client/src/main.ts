@@ -13,7 +13,7 @@ const app = Elm.Main.init({
 
 // ---- WebSockets ----
 
-const socket = new WebSocket(`ws://${import.meta.env.VITE_WS_SERVER}/ws`);
+const socket = new WebSocket(`${import.meta.env.VITE_WS_SERVER}/ws`);
 
 app.ports.internalSend.subscribe((message) => {
     if (socket.readyState === WebSocket.OPEN) {
