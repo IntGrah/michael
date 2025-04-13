@@ -1,0 +1,6 @@
+(executable
+ (public_name server)
+ (name main)
+ (libraries dream yojson)
+ (preprocess
+  (pps lwt_ppx ppx_yojson_conv)))

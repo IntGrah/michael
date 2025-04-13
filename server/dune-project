@@ -1,0 +1,22 @@
+(lang dune 3.17)
+
+(name server)
+
+(source
+ (github IntGrah/michael))
+
+(authors "IntGrah <git@sl.intgrah.com>")
+
+(license LICENSE)
+
+(documentation https://url/to/documentation)
+
+(package
+ (name server)
+ (synopsis "Rhythm of Life")
+ (description "Rhythm of Life")
+ (depends ocaml)
+ (tags
+  ("music" "rhythm")))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
