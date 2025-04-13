@@ -289,7 +289,7 @@ handleLockIn model =
         ( ( incomingLeft, incomingRight ), seed3 ) =
             Random.step
                 (Random.pair
-                    (Fragment.mutate model.instruments model.mutationRate model.heartbeatsReceived incomingCurrent)
+                    (Fragment.mutate model.instruments 10 model.heartbeatsReceived incomingCurrent)
                     (Fragment.mutate model.instruments model.mutationRate model.heartbeatsReceived incomingCurrent)
                 )
                 seed2
@@ -833,6 +833,8 @@ viewFragments model =
                                 , inFront (viewDots 0)
                                 , borderNone
                                 , fadeIn late
+                                , onRight arrowLeft
+                                , onRight arrowRight
                                 , inFront attachIncomingChoices
                                 ]
                                 (Fragment.view model.incoming.current)
